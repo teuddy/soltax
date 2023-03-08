@@ -1,4 +1,4 @@
-name: Deploy to AWS ECR
+name: Build and Push to ECR
 
 on:
   push:
@@ -6,26 +6,39 @@ on:
       - develop
 
 jobs:
-  deploy:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install dependencies
+      - name: Install Docker Compose
         run: |
           sudo apt-get update
-          echo the secret variable is: ${{secrets.NAME }}
+          sudo apt-get -y install docker-compose
 
-  # sudo apt-get install -y docker-compose
-  # - name: Login to ECR
-  #   id: login-ecr
-  #   uses: aws-actions/amazon-ecr-login@v1
-  #   with:
-  #     registry: <your-ecr-registry>
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
-  # - name: Build and push images
-  #   run: |
-  #     docker-compose build
-  #     docker-compose push
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry: 837056842523.dkr.ecr.us-east-1.amazonaws.com/soltax
+
+      - name: Build and Push Docker Images to ECR
+        env:
+          ECR_REGISTRY: 837056842523.dkr.ecr.us-east-1.amazonaws.com/soltax
+        run: |
+          SERVICES=$(docker-compose config --services)
+          for SERVICE in $SERVICES; do
+            IMAGE_NAME="$ECR_REGISTRY/$SERVICE:latest"
+            docker-compose build $SERVICE
+            docker tag $SERVICE:latest $IMAGE_NAME
+            docker push $IMAGE_NAME
+          done
