@@ -1,4 +1,4 @@
-name: Deploy to ECR
+name: Deploy to AWS ECR
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          echo " hello this github actions is working, teuddy"
+          echo the secret variable is:
 
   # sudo apt-get install -y docker-compose
   # - name: Login to ECR
