@@ -41,16 +41,14 @@ jobs:
             if [ "$(docker-compose ps -q $SERVICE)" ]; then
               echo "Skipping $SERVICE because it's using an image from a registry"
             else
-              # Pull the latest version of the image
-              docker pull $IMAGE_NAME || true
-              
-              # If the image doesn't exist, build it using the service name and tag it with the ECR repository URL
-              if ! docker images --quiet $SERVICE; then
-                docker build -t $SERVICE .
+              # If the service has a Dockerfile, build it and tag it with the ECR repository URL
+              DOCKERFILE="$(docker-compose config | yq eval '.services["'$SERVICE'"].build' -)"
+              if [ "$DOCKERFILE" != "null" ]; then
+                docker-compose build $SERVICE
                 docker tag $SERVICE:latest $IMAGE_NAME
+                docker push $IMAGE_NAME
+              else
+                echo "Skipping $SERVICE because it does not have a Dockerfile"
               fi
-              
-              # Push the image to the ECR registry
-              docker push $IMAGE_NAME
             fi
           done
