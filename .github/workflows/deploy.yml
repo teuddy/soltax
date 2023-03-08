@@ -3,7 +3,7 @@ name: Deploy to ECR
 on:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
   deploy:
@@ -16,15 +16,16 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y docker-compose
+          echo " hello this github actions is working, teuddy"
 
-      - name: Login to ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-        with:
-          registry: <your-ecr-registry>
+  # sudo apt-get install -y docker-compose
+  # - name: Login to ECR
+  #   id: login-ecr
+  #   uses: aws-actions/amazon-ecr-login@v1
+  #   with:
+  #     registry: <your-ecr-registry>
 
-      - name: Build and push images
-        run: |
-          docker-compose build
-          docker-compose push
+  # - name: Build and push images
+  #   run: |
+  #     docker-compose build
+  #     docker-compose push
