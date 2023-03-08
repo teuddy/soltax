@@ -16,7 +16,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          echo the secret variable is:
+          echo the secret variable is: ${{ NAME }}
 
   # sudo apt-get install -y docker-compose
   # - name: Login to ECR
