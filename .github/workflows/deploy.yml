@@ -46,7 +46,7 @@ jobs:
               if [ "$DOCKERFILE" != "null" ]; then
                 docker-compose build $SERVICE
                 docker tag $SERVICE:latest $IMAGE_NAME
-                docker push $IMAGE_NAME
+                docker push soltax_$IMAGE_NAME
               else
                 echo "Skipping $SERVICE because it does not have a Dockerfile"
               fi
