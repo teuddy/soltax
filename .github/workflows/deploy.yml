@@ -38,7 +38,11 @@ jobs:
           SERVICES=$(docker-compose config --services)
           for SERVICE in $SERVICES; do
             IMAGE_NAME="$ECR_REGISTRY/$SERVICE:latest"
-            docker-compose build $SERVICE
-            docker tag $SERVICE:latest $IMAGE_NAME
-            docker push $IMAGE_NAME
-          done
+            if [ "$(docker-compose ps -q $SERVICE)" ]; then
+              echo "Skipping $SERVICE because it's using an image from a registry"
+            else
+              docker-compose build --no-deps $SERVICE
+              docker tag $SERVICE:latest $IMAGE_NAME
+              docker push $IMAGE_NAME
+            fi
+           done
