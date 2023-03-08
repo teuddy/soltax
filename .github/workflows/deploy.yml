@@ -35,14 +35,15 @@ jobs:
         env:
           ECR_REGISTRY: 837056842523.dkr.ecr.us-east-1.amazonaws.com/soltax
         run: |
+          docker-compose pull
           SERVICES=$(docker-compose config --services)
           for SERVICE in $SERVICES; do
             IMAGE_NAME="$ECR_REGISTRY/$SERVICE:latest"
             if [ "$(docker-compose ps -q $SERVICE)" ]; then
               echo "Skipping $SERVICE because it's using an image from a registry"
             else
-              docker-compose build --no-deps $SERVICE
+              docker-compose up --no-start $SERVICE
               docker tag $SERVICE:latest $IMAGE_NAME
               docker push $IMAGE_NAME
             fi
-           done
+          done
