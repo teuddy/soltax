@@ -29,11 +29,11 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
         with:
-          registry: 837056842523.dkr.ecr.us-east-1.amazonaws.com/soltax
+          registry: 837056842523.dkr.ecr.us-east-1.amazonaws.com/soltax/backend
 
       - name: Build and Push Docker Images to ECR
         env:
-          ECR_REGISTRY: 837056842523.dkr.ecr.us-east-1.amazonaws.com/soltax
+          ECR_REGISTRY: 837056842523.dkr.ecr.us-east-1.amazonaws.com/soltax/backend
         run: |
             SERVICES=$(docker-compose config --services) 
             for SERVICE in $SERVICES; do
