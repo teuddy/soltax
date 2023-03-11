@@ -37,7 +37,17 @@ jobs:
         run: |
             SERVICES=$(docker-compose config --services)
             for SERVICE in $SERVICES; do
-                echo "$ECR_REGISTRY/$SERVICE:latest"
+                # if the service has a Dockerfile build it and tag it 
+                DOCKERFILE="$(docker-compose config | yq eval '.services["'$SERVICE'"].build' -)"
+                if [ "$DOCKERFILE" != "null" ]; then
+                    echo "the $SERVICE has a dockerfile "
+                    echo "print all images"
+                    docker images -a
+                else  
+                    echo "the $SERVICE NOT has a dockerfile"
+
+                fi
+                  
             done
 
   # SERVICES=$(docker-compose config --services) 
