@@ -61,39 +61,3 @@ jobs:
 
 
 
-
-
-
-  # SERVICES=$(docker-compose config --services) 
-          # for SERVICE in $SERVICES; do
-          #   IMAGE_NAME="$ECR_REGISTRY/$SERVICE:latest"
-          #   if [ "$(docker-compose ps -q $SERVICE)" ]; then
-          #     echo "Skipping $SERVICE because it's using an image from a registry"
-          #   else
-          #     # If the service has a Dockerfile, build it and tag it with the ECR repository URL
-          #     DOCKERFILE="$(docker-compose config | yq eval '.services["'$SERVICE'"].build' -)"
-          #     if [ "$DOCKERFILE" != "null" ]; then
-          #       docker-compose build $SERVICE
-          #       docker tag $SERVICE:latest $IMAGE_NAME
-          #       docker push $IMAGE_NAME
-          #     else
-          #       echo "Skipping $SERVICE because it does not have a Dockerfile"
-          #     fi
-          #   fi
-          # done
-
-            # SERVICES=$(docker-compose config --services)
-            # for SERVICE in $SERVICES; do
-            #     # if the service has a Dockerfile build it and tag it 
-            #     DOCKERFILE="$(docker-compose config | yq eval '.services["'$SERVICE'"].build' -)"
-            #     if [ "$DOCKERFILE" != "null" ]; then
-            #         MYSERVICE=soltax_${SERVICE}
-            #         docker-compose build $SERVICE
-            #         docker tag $MYSERVICE:latest $IMAGE_NAME
-            #         docker push $IMAGE_NAME
-            #     else  
-            #         echo "the $SERVICE NOT has a dockerfile"
-
-            #     fi
-                  
-            # done
