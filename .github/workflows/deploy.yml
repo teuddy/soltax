@@ -40,11 +40,8 @@ jobs:
                 # if the service has a Dockerfile build it and tag it 
                 DOCKERFILE="$(docker-compose config | yq eval '.services["'$SERVICE'"].build' -)"
                 if [ "$DOCKERFILE" != "null" ]; then
-                    echo "the $SERVICE has a dockerfile "
-                    echo "build the service"
-                    docker-compose build $SERVICE
-                    echo "print all images"
-                    docker images -a
+                    MYSERVICE=soltax_${SERVICE}
+                    echo "this is the service name: $MYSERVICE"
                 else  
                     echo "the $SERVICE NOT has a dockerfile"
 
