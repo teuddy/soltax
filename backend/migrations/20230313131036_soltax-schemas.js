@@ -33,7 +33,6 @@ exports.up = function(knex) {
         table.integer('model_id').unsigned().references('id').inTable('models');
         table.integer('version_id').unsigned().references('id').inTable('versions');
         table.integer('year_id').unsigned().references('id').inTable('years');
-        table.decimal('tax_import', 10, 2);
         table.integer('tax_import_id').unsigned().references('id').inTable('tax_import');
       })
     ]);
