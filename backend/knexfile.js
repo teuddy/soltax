@@ -16,6 +16,9 @@ module.exports = {
       password: process.env.DATABASE_PASSWORD
         ? readFileSync(process.env.DATABASE_PASSWORD)
         : null,
+    },
+    migrations:{
+      directory:__dirname + '/migrations'
     }
   },
 
