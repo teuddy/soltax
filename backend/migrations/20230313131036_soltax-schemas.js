@@ -4,11 +4,15 @@ exports.up = function(knex) {
         table.increments('id').primary();
         table.string('brand_name');
       }),
+      knex.schema.createTable('years', function(table) {
+        table.increments('id').primary();
+        table.integer('year');
+      }),
       knex.schema.createTable('models', function(table) {
         table.increments('id').primary();
         table.integer('brand_id').unsigned().references('id').inTable('brands');
         table.string('model_name');
-        table.integer('year');
+        table.integer('year_id').unsigned().references('id').inTable('years');
       }),
       knex.schema.createTable('versions', function(table) {
         table.increments('id').primary();
@@ -28,6 +32,7 @@ exports.up = function(knex) {
         table.integer('brand_id').unsigned().references('id').inTable('brands');
         table.integer('model_id').unsigned().references('id').inTable('models');
         table.integer('version_id').unsigned().references('id').inTable('versions');
+        table.integer('year_id').unsigned().references('id').inTable('years');
         table.decimal('tax_import', 10, 2);
         table.integer('tax_import_id').unsigned().references('id').inTable('tax_import');
       })
@@ -39,6 +44,7 @@ exports.up = function(knex) {
       knex.schema.dropTable('cars'),
       knex.schema.dropTable('versions'),
       knex.schema.dropTable('models'),
+      knex.schema.dropTable('years'),
       knex.schema.dropTable('brands'),
       knex.schema.dropTable('tax_import')
     ]);
