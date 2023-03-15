@@ -1,5 +1,8 @@
 // Update with your config settings.
+require('dotenv').config();
 const fs = require("fs");
+
+
 
 const readFileSync = (filename) => fs.readFileSync(filename).toString("utf8");
 
@@ -19,7 +22,11 @@ module.exports = {
     },
     migrations:{
       directory:__dirname + '/migrations'
+    },
+    seeds:{
+      directory:__dirname + '/seeds'
     }
+    
   },
 
   staging: {
