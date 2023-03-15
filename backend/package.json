@@ -7,6 +7,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
+    "migrate": "npx knex migrate:latest",
+    "seed":"npx knex seed:run",
     "start-watch": "nodemon src/index.js --inspect=0.0.0.0:9229",
     "start-wait-debuger": "nodemon src/index.js --inspect-brk=0.0.0.0:9229",
     "test": "cross-env NODE_ENV=test PORT=8081 mocha --timeout 10000 --exit --inspect=0.0.0.0:9230",
@@ -14,9 +16,12 @@
     "test-wait-debuger": "cross-env NODE_ENV=test PORT=8081 mocha --no-timeouts --exit --inspect-brk=0.0.0.0:9230"
   },
   "dependencies": {
+    "dotenv": "^16.0.3",
     "express": "^4.17.1",
     "knex": "^0.95.11",
+    "mariadb": "^3.1.0",
     "morgan": "^1.10.0",
+    "mysql": "^2.18.1",
     "mysql2": "^2.1.0"
   },
   "devDependencies": {

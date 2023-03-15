@@ -12,103 +12,124 @@ const morgan = require("morgan");
 // which is a best practice in Docker. Friends don't let friends code their apps to
 // do app logging to files in containers.
 
-const database = require("./database");
+
+const connections = require('./database')
+
 
 // Appi
 const app = express();
 
 app.use(morgan("common"));
 
-const cars = [
-  {
-    id: 1,
-    brand: "Toyota",
-    models: [
-      {
-        id: 1,
-        name: "Corolla",
-        years: [2022, 2021, 2020],
-        versions: ["LE", "SE", "XSE"],
-      },
-      {
-        id: 2,
-        name: "Camry",
-        years: [2022, 2021, 2020],
-        versions: ["LE", "SE", "XSE"],
-      },
-    ],
-  },
-  {
-    id: 2,
-    brand: "Honda",
-    models: [
-      {
-        id: 3,
-        name: "Accord",
-        years: [2022, 2021, 2020],
-        versions: ["LX", "Sport", "Touring"],
-      },
-      {
-        id: 4,
-        name: "Civic",
-        years: [2022, 2021, 2020],
-        versions: ["LX", "Sport", "Touring"],
-      },
-    ],
-  },
-  {
-    id: 3,
-    brand: "Ford",
-    models: [
-      {
-        id: 5,
-        name: "Mustang",
-        years: [2022, 2021, 2020],
-        versions: ["Ecoboost", "GT", "Mach 1"],
-      },
-      {
-        id: 6,
-        name: "F-150",
-        years: [2022, 2021, 2020],
-        versions: ["XL", "XLT", "Lariat"],
-      },
-    ],
-  },
-];
-
-//return a jsn response of car brands
-app.get("/carbrands", function (req, res, next) {
-  res.json(cars);
+app.get('/brands', function (req, res, next) {
+  connections
+    .select('*')
+    .from('brands')
+    .join('models', 'brands.id', '=', 'models.brand_id')
+    .leftJoin(
+      connections
+        .select('model_id', connections.raw('GROUP_CONCAT(year) as years'))
+        .from('model_years')
+        .groupBy('model_id')
+        .as('years'),
+      'models.id',
+      '=',
+      'years.model_id'
+    )
+    .leftJoin(
+      connections
+        .select('model_id', connections.raw('GROUP_CONCAT(version_name) as versions'))
+        .from('versions')
+        .groupBy('model_id')
+        .as('versions'),
+      'models.id',
+      '=',
+      'versions.model_id'
+    )
+    .then((rows) => {
+      const brands = rows.reduce((acc, row) => {
+        const brand = acc.find((brand) => brand.id === row.brand_id);
+        if (brand) {
+          brand.models.push({
+            id: row.id,
+            name: row.model_name,
+            years: row.years ? row.years.split(',') : [],
+            versions: row.versions ? row.versions.split(',') : [],
+          });
+        } else {
+          acc.push({
+            id: row.brand_id,
+            brand_name: row.brand_name,
+            models: [
+              {
+                id: row.id,
+                name: row.model_name,
+                years: row.years ? row.years.split(',') : [],
+                versions: row.versions ? row.versions.split(',') : [],
+              },
+            ],
+          });
+        }
+        return acc;
+      }, []);
+      res.send(brands);
+    });
 });
-
-//based on car brand id return models
-app.get("/carmodels/:id", function (req, res, next) {
+//brand{id}
+app.get("/brands/:id", function (req, res, next) {
   const id = req.params.id;
   //find brand and return models
-  const brand = cars.find((brand) => brand.id == id);
-  res.json(brand.models);
+  connections.select('*').from('brands').where('id', id)
+  .then((rows) => {
+    res.json(rows)
+  }
+  )
 });
-
-//get car model and return avaible years
-app.get("/caryears/:id", function (req, res, next) {
+//models
+app.get("/models", function (req, res, next) {
+    connections('models').select('*')
+    .then((rows) => {
+        res.json(rows)
+    }
+    )
+});
+//model{id}
+app.get("/models/:id", function (req, res, next) {
   const id = req.params.id;
   //find brand and return models
-  const brand = arr.find((brand) => brand.id == id);
-  res.json(brand.models);
+  connections.select('*').from('models').where('id', id)
+  .then((rows) => {
+    res.json(rows)
+  }
+  )
 });
 
-// app.post("/getData", function (req, res, next) {
-//   //receives the car brand and models form frotnend
-//   const data = req.body;
-//   console.log(data);
-// });
+//verions 
+app.get("/versions", function (req, res, next) {
+    connections('versions').select('*')
+    .then((rows) => {
+        res.json(rows)
+    }
+    )
+});
+//version{id}
+app.get("/versions/:id", function (req, res, next) {
+  const id = req.params.id;
+  //find brand and return models
+  connections.select('*').from('versions').where('id', id)
+  .then((rows) => {
+    res.json(rows)
+  }
+  )
+});
 
 app.get("/", function (req, res, next) {
-  database
-    .raw("select VERSION() version")
-    .then(([rows, columns]) => rows[0])
-    .then((row) => res.json({ message: `Hello from MySQL ${row.version}` }))
-    .catch(next);
+  // database
+  //   .raw("select VERSION() version")
+  //   .then(([rows, columns]) => rows[0])
+  //   .then((row) => res.json({ message: `Hello from MySQL ${row.version}` }))
+  //   .catch(next);
+  res.send("Hello World");
 });
 
 app.get("/healthz", function (req, res) {

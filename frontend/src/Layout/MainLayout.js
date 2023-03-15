@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Footer from "../Components/Footer/Footer";
 const { motion, AnimatePresence } = require("framer-motion");
+const brandsSchema = require('../Schemas/DataSchema.js')
 
 const MainLayout = () => {
   //state for animations
@@ -21,9 +22,16 @@ const MainLayout = () => {
     setShowBox((prev) => !prev);
     setBoxExited((prev) => !prev);
     //get the brans when the toggle buttons is clicked
-    fetch("/api/carbrands/")
-      .then((res) => res.json())
-      .then((res) => setBrands(res))
+    fetch("/api/brands/")
+      .then((res)=>res.json())
+      .then((res) => {
+        const {error} = brandsSchema.validate(res)
+        if (error) {
+          console.error(error);
+          throw new Error('Invalid data received from server');
+        }
+        setBrands(res);
+      })
       .catch(console.error);
   };
   const handleBrandChange = (event) => {
@@ -121,10 +129,12 @@ const MainLayout = () => {
                     className="w-[100%] h-[40px]"
                     onChange={handleBrandChange}
                   >
+                      <option value="">-- Escoge una marca --</option>
+
                     {brands.map((brand) => {
                       return (
                         <option key={brand.id} value={brand.id}>
-                          {brand.brand}
+                          {brand.brand_name}
                         </option>
                       );
                     })}
@@ -140,6 +150,8 @@ const MainLayout = () => {
                     className="w-[100%] h-[40px]"
                     onChange={handleModelChange}
                   >
+                      <option value="">-- Escoge un modelo --</option>
+
                     {selectedBrand &&
                       selectedBrand.models.map((model) => (
                         <option key={model.id} value={model.id}>
@@ -160,6 +172,8 @@ const MainLayout = () => {
                     className="w-[100%] h-[40px]"
                     onChange={handleYearChange}
                   >
+                      <option value="">-- Escoge un año --</option>
+
                     {selectedModel &&
                       selectedModel.years.map((year) => (
                         <option key={year} value={year.id}>
@@ -177,6 +191,8 @@ const MainLayout = () => {
                     className="w-[100%] h-[40px]"
                     onChange={handleVersionChange}
                   >
+                      <option value="">-- Escoge una versión--</option>
+
                     {selectedModel &&
                       selectedModel.versions.map((version) => (
                         <option key={version} value={version.id}>
@@ -195,6 +211,8 @@ const MainLayout = () => {
                   className="w-[100%] h-[40px]"
                   onChange={handleChassisChange}
                 >
+                    <option value="">-- Escoge el No. Chásis --</option>
+
                   <option value="usa">CHASIS (1,4,5,7) AMERICANO</option>
                   <option value="canada">CHASIS (2) CANADA</option>
                   <option value="mex">CHASIS (3) MÉXICO</option>
@@ -208,7 +226,7 @@ const MainLayout = () => {
               >
                 Impuestos
               </button>
-              <div className="bg-red-500"></div>
+             
             </div>
           </motion.div>
         </AnimatePresence>
