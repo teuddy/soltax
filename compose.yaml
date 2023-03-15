@@ -1,11 +1,27 @@
 services:
+  db:
+    # We use a mariadb image which supports both amd64 & arm64 architecture
+    image: mariadb:10.6.4-focal
+    # If you really want to use MySQL, uncomment the following line
+    #image: mysql:8.0.27
+    command: "--default-authentication-plugin=mysql_native_password"
+    restart: always
+    secrets:
+      - db-password
+    volumes:
+      - db-data:/var/lib/mysql\
+    networks:
+      - private
+    environment:
+      - MYSQL_DATABASE=example
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
   backend:
     build:
       args:
         - NODE_ENV=development
       context: backend
       target: development
-    command: bash -c "npm run start-watch"
+    # command: bash -c "npm run start-watch"
     environment:
       - DATABASE_DB=example
       - DATABASE_USER=root
@@ -28,22 +44,6 @@ services:
       - private
     depends_on:
       - db
-  db:
-    # We use a mariadb image which supports both amd64 & arm64 architecture
-    image: mariadb:10.6.4-focal
-    # If you really want to use MySQL, uncomment the following line
-    #image: mysql:8.0.27
-    command: "--default-authentication-plugin=mysql_native_password"
-    restart: always
-    secrets:
-      - db-password
-    volumes:
-      - db-data:/var/lib/mysql\
-    networks:
-      - private
-    environment:
-      - MYSQL_DATABASE=example
-      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
   frontend:
     build:
       context: frontend

@@ -26,12 +26,20 @@ HEALTHCHECK --interval=30s \
 # copy in our source code last, as it changes the most
 COPY . /code
 
+# used to wait for db
+RUN apt-get update && \
+    apt-get install -y netcat
+
+RUN chmod +x start.sh
 
 # if you want to use npm start instead, then use `docker run --init in production`
 # so that signals are passed properly. Note the code in index.js is needed to catch Docker signals
 # using node here is still more graceful stopping then npm with --init afaik
 # I still can't come up with a good production way to run with npm and graceful shutdown
-CMD [ "node", "src/index.js" ]
+# CMD [ "node", "src/index.js" ]
+# in order to work in my workstating i did changed the way my backend runs.
+# but in order to still listening for docker signals i did trap those signals inside my sh file
+CMD [ "sh", "start.sh" ]
 
 FROM development as dev-envs
 RUN apt-get update && \
