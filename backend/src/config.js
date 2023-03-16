@@ -1,4 +1,3 @@
-require('dotenv').config()
 const fs = require("fs");
 const readFileSync = (filename) => fs.readFileSync(filename).toString("utf8");
 
