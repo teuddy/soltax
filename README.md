@@ -6,6 +6,8 @@ This is a database-driven system designed for the Dominican Republic that tracks
 
 The Node.js backend is designed to work with different databases depending on the environment. During development, we use a local Docker database that can be easily set up and torn down as needed. However, when the application is deployed to a staging environment, we switch to using Amazon RDS for our database needs. This allows us to take advantage of the scalability and reliability of a managed database service while still keeping our development environment lightweight and flexible.
 
+![Soltax Homepage](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGNlOWQwMTM4MTUzZmRjYWIyZWFlODlhNWYwMjVmNTc3ODkzZDFmZiZjdD1n/LyNKtN6tchhxwFbWyv/giphy.gif)
+
 ## Table of Contents
 
 - [Technologies Used](#technologies-used)
