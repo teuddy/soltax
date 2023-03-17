@@ -6,7 +6,7 @@ module.exports = function (app) {
   app.use(
     "/api",
     createProxyMiddleware({
-      target: "http://backend",
+      target: `http://${process.env.BACKEND_HOST}`,
       pathRewrite: { "^/api": "" },
     })
   );
