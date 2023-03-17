@@ -1,8 +1,7 @@
 
 
 # Start the Node.js backend
-echo "Your are in "$NODE_ENV" so lets wait for the db to be up"
-node src/index.js
+echo "Your are in "$NODE_ENV" environment"
 if [ "$NODE_ENV" = "development" ]; then
   echo "waiting for db"
   echo "$DATABASE_HOST and $DATABASE_PORT"

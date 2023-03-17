@@ -19,16 +19,26 @@ services:
     build:
       args:
         # disponible mientras se este creando la imagen
-        - NODE_ENV=development
+        # - NODE_ENV=development
+            # creo que asi lo hago mas dinamico
+          - NODE_ENV=${NODE_ENV}
       context: backend
       target: development
-    command: npm run start-watch
+    # command: npm run start-watch
     environment:
+      # say backend to use development environment
+      - NODE_ENV=${NODE_ENV}
+      # local development
       - DATABASE_DB=${DATABASE_DB}
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
       - DATABASE_HOST=${DATABASE_HOST}
-      - NODE_ENV=${NODE_ENV}
+      # staging environment
+      - STAGING_DATABASE_HOST=${STAGING_DATABASE_HOST}
+      - STAGING_DATABASE_PORT=${STAGING_DATABASE_PORT}
+      - STAGING_DATABASE_DB=${STAGING_DATABASE_DB}
+      - STAGING_DATABASE_USER=${STAGING_DATABASE_USER}
+      - STAGING_DATABASE_PASSWORD=${STAGING_DATABASE_PASSWORD}
     ports:
       - 80:80
       - 9229:9229

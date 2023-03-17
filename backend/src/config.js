@@ -27,20 +27,20 @@ module.exports = {
             }
             
           },
-
           staging: {
-            client: 'postgresql',
+            client: 'mysql',
             connection: {
-              database: 'my_db',
-              user:     'username',
-              password: 'password'
+              host: process.env.STAGING_DATABASE_HOST || "localhost",
+              port: process.env.STAGING_DATABASE_PORT,
+              database: process.env.STAGING_DATABASE_DB,
+              user: process.env.STAGING_DATABASE_USER,
+              password: process.env.STAGING_DATABASE_PASSWORD
             },
-            pool: {
-              min: 2,
-              max: 10
+            migrations:{
+              directory:__dirname + '/../migrations'
             },
-            migrations: {
-              tableName: 'knex_migrations'
+            seeds:{
+              directory:__dirname + '/../seeds'
             }
           },
 
