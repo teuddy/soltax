@@ -39,7 +39,10 @@ RUN chmod +x start.sh
 # CMD [ "node", "src/index.js" ]
 # in order to work in my workstating i did changed the way my backend runs.
 # but in order to still listening for docker signals i did trap those signals inside my sh file
+
+# this gets overrided by docker-compose  [command] so that's why local db is not waited for
 CMD [ "sh", "start.sh" ]
+
 
 FROM development as dev-envs
 RUN apt-get update && \
